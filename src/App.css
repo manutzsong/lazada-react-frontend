@@ -1,0 +1,47 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #09d3ac;
+}
+canvas{ height:100%; }
+
+.hide-button {
+  top:0px !important;
+}
+
+.show-button {
+  top: -300px;
+}
+
+.bg-purple {
+  background: rgb(63,94,251);
+  background: linear-gradient(0deg, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%);
+}
+
+label {
+  margin-bottom : 0rem !important;
+}
+.PrivateSwitchBase-root-159 {
+  padding:3px !important;
+}
+
+.box-shadow {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
