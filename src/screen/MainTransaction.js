@@ -37,8 +37,8 @@ import { Paper } from "@material-ui/core";
 import {Link as RouterLink} from "react-router-dom";
 
 
-// const urlAPI = "http://lazada-song-ws.herokuapp.com";
 const urlAPI = "https://manutzsong-laz.ddns.net/node-sv";
+// const urlAPI = "http://localhost:3002";
 
 export default class App extends React.Component {
 	constructor(props) {

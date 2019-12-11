@@ -7,7 +7,8 @@ import Button from '@material-ui/core/Button';
 import ReactDataGrid from "react-data-grid";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
-
+const urlAPI = "https://manutzsong-laz.ddns.net/node-sv"
+// const urlAPI = "http://localhost:3002"
 export default class App extends React.Component {
     constructor(props) {
         super(props);
@@ -37,14 +38,14 @@ export default class App extends React.Component {
 
     checkCode = async() => {
       await this.setState({isLoading : "Checking your authorization"});
-      let url = "https://manutzsong-laz.ddns.net/python-sv/getaccess";
+      let url = `${urlAPI}/login`;
+      console.log(url);
       
       const {code} = queryString.parse(this.props.location.search);
       console.log(code);
 
-      url += `?code=${code}`; 
-      axios.get(url).then( async(response) => {
-        // console.log(response.data.);
+      axios.post(url,{accessCode : code }).then( async(response) => {
+        console.log(response.data);
         if (response.data && response.data.access_token) {
           console.log(response.data);
           sessionStorage.setItem('accesstoken', response.data.access_token);
@@ -60,9 +61,8 @@ export default class App extends React.Component {
 
     loopThroughProducts = async() => {
       await this.setState({isLoading : "Get product list"});
-      let url = `https://manutzsong-laz.ddns.net/python-sv/getproducts?accesstoken=${this.state.accessToken}`; 
-      let products = await axios.get(url);
-      console.log(products.data.data.products);
+      let url = `${urlAPI}/getproducts`;
+      let products = await axios.post(url,{ accessToken : this.state.accessToken });
       products = products.data.data.products.map(x => x.skus);
       console.log(products);
       products = products.flat();
@@ -80,7 +80,7 @@ export default class App extends React.Component {
         productSameAsDB.push(pushThis);
       });
 
-      let productsFromDB = await axios.post("https://manutzsong-laz.ddns.net/node-sv/laz_product",{greaseUserID : sessionStorage.getItem("userid")});
+      let productsFromDB = await axios.post(`${urlAPI}/laz_product`,{greaseUserID : sessionStorage.getItem("userid")});
       console.log(productsFromDB.data);
       // //LAZ_SKU from DB
       let LAZ_SKU = [];
@@ -143,7 +143,7 @@ export default class App extends React.Component {
       // console.log(this.state.products);
       axios({
         method: 'post',
-        url: 'https://manutzsong-laz.ddns.net/node-sv/insert',
+        url: `${urlAPI}/insert`,
         data: { products : this.state.products, userid : this.state.userId || sessionStorage.getItem("userid")}
       }).then( res => {
         console.log(res.data);
