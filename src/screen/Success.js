@@ -13,7 +13,6 @@ export default class App extends React.Component {
         super(props);
         this.state = {
             code : "",
-            testProduct : require('../test_products.json'),
             products:[],
             columns : [
               { name: 'Name', key: 'seller_sku', fronzen: true, width:300, sortDescendingFirst: true, resizable: true},
