@@ -88,7 +88,8 @@ export default class App extends React.Component {
 					accesstoken : sessionStorage.getItem("accesstoken"), 
 					status: this.state.statusOrder, 
 					startdate : this.state.startDateUserSelect , 
-					enddate: this.state.endDateUserSelect 
+					enddate: this.state.endDateUserSelect,
+					userid : sessionStorage.getItem("userid")
 				}
 			  })
 			.then(result => {

@@ -80,7 +80,7 @@ export default class App extends React.Component {
         productSameAsDB.push(pushThis);
       });
 
-      let productsFromDB = await axios.post("https://manutzsong-laz.ddns.net/node-sv/laz_product");
+      let productsFromDB = await axios.post("https://manutzsong-laz.ddns.net/node-sv/laz_product",{greaseUserID : sessionStorage.getItem("userid")});
       console.log(productsFromDB.data);
       // //LAZ_SKU from DB
       let LAZ_SKU = [];
