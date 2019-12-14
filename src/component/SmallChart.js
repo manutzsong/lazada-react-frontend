@@ -18,7 +18,7 @@ import Divider from '@material-ui/core/Divider';
 
 */
 
-export default ({title,point,label,orderNo}) => {
+export default ({title,point,label,orderNo,borderColor, backgroundColor}) => {
     const sum = point.reduce((a, b) => a + b, 0);
     const getRandomColor = () => {
       var letters = '0123456789ABCDEF'.split('');
@@ -28,15 +28,15 @@ export default ({title,point,label,orderNo}) => {
       }
       return color;
     }
-
+    let colorIsThis = getRandomColor();
     const data = {
       
       labels: label,
       datasets: [{
         label: title,
         data: point,
-        borderColor: getRandomColor(),
-        fill: false
+        borderColor: borderColor,
+        backgroundColor: backgroundColor,
       }]
     };
   
@@ -75,7 +75,7 @@ export default ({title,point,label,orderNo}) => {
           display: false
         }],
         yAxes: [{
-          display: false,
+          display: true,
           ticks: {
             beginAtZero: true
           }

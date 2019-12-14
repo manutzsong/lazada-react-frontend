@@ -17,7 +17,7 @@ import { Divider } from '@material-ui/core';
 		}
 
 */
-
+//https://flatuicolors.com/palette/defo
 export default ({resultData}) => {
     console.log(resultData);
     const data = {
@@ -26,48 +26,56 @@ export default ({resultData}) => {
       datasets: [{
         label: 'Revenue',
         data: resultData.revenue,
-        borderColor: '#2196f3',
-        fill: false
+        borderColor: 'rgba(52, 152, 219,1.0)',
+        backgroundColor : 'rgba(52, 152, 219,0.2)',
       }, {
         label: 'Shipping Fee Paid by Customer',
         data: resultData.shippingFeePaidByCustomer,
-        borderColor: '#9c27b0',
-        fill: false
+        borderColor: 'rgba(26, 188, 156,1.0)',
+        backgroundColor : 'rgba(26, 188, 156,0.2)',
       }, {
         label: 'Shipping Fee Charged By Lazada',
         data: resultData.shippingFeeChargedByLAZ,
-        borderColor: '#004444',
-        fill: false
+        borderColor: 'rgba(155, 89, 182,1.0)',
+        backgroundColor : 'rgba(155, 89, 182,0.2)',
       }, {
         label: 'Profit',
         data: resultData.profit,
-        borderColor: '#4caf50',
-        fill: false
+        borderColor: 'rgba(46, 204, 113,1.0)',
+        backgroundColor : 'rgba(46, 204, 113,0.2)',
       }, {
         label: 'Cost',
         data: resultData.cost,
-        borderColor: '#cc181e',
-        fill: false
+        borderColor: 'rgba(192, 57, 43,1.0)',
+        backgroundColor : 'rgba(192, 57, 43,0.2)',
       }, {
         label: 'Payment Fee',
         data: resultData.paymentFee,
-        borderColor: '#666666',
-        fill: false
+        borderColor: 'rgba(241, 196, 15,1.0)',
+        backgroundColor : 'rgba(241, 196, 15,0.2)',
       }, {
         label: 'Flexi',
         data: resultData.promotionalFlexi,
-        borderColor: '#eb8c00',
-        fill: false
+        borderColor: '#34495e',
+        backgroundColor : 'rgba(52, 73, 94,0.2)',
       }, {
         label: 'Voucher',
         data: resultData.promotionalVoucher,
-        borderColor: '#a32020',
-        fill: false
+        borderColor: '#95a5a6',
+        backgroundColor : 'rgba(127, 140, 141,0.2)',
       }]
     };
   
     const options = {
       responsive:true,
+      layout: {
+        padding: {
+            top: 5,
+            left: 15,
+            right: 15,
+            bottom: 15
+        }
+      },
       tooltips: {
          mode: 'index',
          intersect: false,
@@ -84,12 +92,14 @@ export default ({resultData}) => {
       bezierCurve : false,
       elements: {
           line: {
-              tension: 0
+              // tension: 0
           }
       },
       scales: {
         xAxes: [{
-          type: 'time',
+          ticks: { display: false },
+          // type: 'time',
+          // distribution:'linear',
           time: {
             tooltipFormat: 'LLL',
             displayFormats: {
@@ -104,7 +114,10 @@ export default ({resultData}) => {
                 'year': 'MMM D YYYY h:mm',
             }
           }
-      }]                 
+        }],
+        yAxes: [{
+          // stacked: true
+        }]                 
       },
       pan:{
         enabled:true,

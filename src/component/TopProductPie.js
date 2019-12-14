@@ -36,6 +36,14 @@ export default ({resultData,title}) => {
       legend: {
         display: false,
      },
+     layout: {
+      padding: {
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0
+      }
+    }
    }
 
    
@@ -56,10 +64,10 @@ export default ({resultData,title}) => {
         <h5 className="text-left py-2">{title}</h5>
         <Divider />
         <div className="row d-flex justify-content-around align-items-center">
-          <div className="col-9">
-            <Doughnut data={data} options={options} />
+          <div className="col-6">
+            <Doughnut data={data} options={options} width={250} height={310} />
           </div>
-          <div className="col-3">
+          <div className="col-6">
             <List  disablePadding dense component={Paper}>{renderList()}</List>
           </div>
         </div>
