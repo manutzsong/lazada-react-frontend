@@ -87,7 +87,7 @@ export default ({title,point,label,orderNo,borderColor, backgroundColor}) => {
 
 
    return (
-        <div className="box-shadow p-2 text-left">
+        <div className="box-shadow p-2 text-left mt-3">
           <div className="mx-3">
             <h4>฿ {sum}</h4>
             <h6 className="text-secondary">{title}</h6>

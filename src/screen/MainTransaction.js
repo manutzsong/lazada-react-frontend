@@ -65,9 +65,9 @@ export default class App extends React.Component {
 			chartOrderNoArray: {},
 			chartTopSellArray: {},
 			chartAllSKUsArray: {},
-			orderedCountsCity : [],
+			orderedCountsCity: [],
 
-			postalCode : require("../data/PostalCode.json"),
+			postalCode: require("../data/PostalCode.json"),
 
 			potentialGain: null,
 			potentialLoss: null,
@@ -159,7 +159,7 @@ export default class App extends React.Component {
 		this.promisesFreqNChart(resultPromises[0]);
 	}
 
-	transactionMutate = async(result) => {
+	transactionMutate = async (result) => {
 
 		let resultAxios = result.data;
 
@@ -173,15 +173,15 @@ export default class App extends React.Component {
 			//llop transaction
 			let transactionsAppend = {}; //group up
 			let sumThisPLS = 0;
-			transactions.forEach(async(x, xIndex) => {
+			transactions.forEach(async (x, xIndex) => {
 
 				sumThisPLS += Number(x.amount);
 
 				const groupThis = x.orderItem_no;//change this LINE if you want to change matching key
 				if (typeof transactionsAppend[groupThis] === "undefined") {//if first
 					let orderFiltered = orders.find(z => z.order_id == x.order_no);
-					if(!orderFiltered) {//if undefine probably from pulling only Delivered but forgot other status; this wil lcatch all undefined
-						let resultReturned  = await axios({
+					if (!orderFiltered) {//if undefine probably from pulling only Delivered but forgot other status; this wil lcatch all undefined
+						let resultReturned = await axios({
 							method: 'post',
 							url: `${urlAPI}/getorder`,
 							timeout: 60 * 10 * 1000, // Let's say you want to wait at least 4 mins
@@ -288,7 +288,7 @@ export default class App extends React.Component {
 					// console.log(`${Number(x.amount)} |  ${transactionsAppend[groupThis].total}  | ${groupThis}`);
 				}
 			});//end loop transactions
-			
+
 
 			console.log(sumThisPLS);
 			let transactionNotJSON = [];//fix JSON of JSON to Array of JSON Obj
@@ -335,46 +335,55 @@ export default class App extends React.Component {
 			return writeThis;
 		}
 		catch (e) {
-			
+
 			throw e;
 		}
 	}
 
 
+	potentailGainLoss = async () => {
+		let potentialLoss = 0;
+		let potentialGain = 0;
+		this.state.resultOrderItems.forEach(x => {
+			if (x.status === "canceled") {
+				potentialLoss += x.item_price;
+			}
+			else {
+				potentialGain += x.item_price;
+			}
+		});
+		if (potentialGain === 0) {
+			await this.setState({ potentialLoss: potentialLoss, potentialGain: null, });
+		}
+		else {
+			await this.setState({ potentialGain: potentialGain, potentialLoss: null });
+		}
 
+		await Promise.all([this.countFrequency].map(z => z()));
+	}
 
 	promisesFreqNChart = async (result) => {
 		try {
-			let resultReturn = await this.transactionMutate(result);
-			await this.setState({
-				resultTransactions: resultReturn.transactions,
-				resultInventory: result.inventory,
-				wideFinancial: resultReturn.wideFinancial
-			});
-			// await this.prepareChartOrderNo();
-			await Promise.all([this.prepareChartOrderNo, this.countFrequency].map(z => z()));
+			if (this.state.statusOrder === "delivered") {
+
+				let resultReturn = await this.transactionMutate(result);
+				await this.setState({
+					potentialGain : null,
+					potentialLoss : null,
+					resultTransactions: resultReturn.transactions,
+					resultInventory: result.inventory,
+					wideFinancial: resultReturn.wideFinancial
+				});
+				// await this.prepareChartOrderNo();
+				await Promise.all([this.prepareChartOrderNo, this.countFrequency].map(z => z()));
+			}
+			else {
+				this.potentailGainLoss();
+			}
 
 		}
 		catch (e) {
-			console.error(e,"WARNING");
-			let potentialLoss = 0;
-			let potentialGain = 0;
-			this.state.resultOrderItems.forEach(x => {
-				if (x.status === "canceled") {
-					potentialLoss += x.item_price;
-				}
-				else {
-					potentialGain += x.item_price;
-				}
-			});
-			if (potentialGain === 0) {
-				await this.setState({ potentialLoss: potentialLoss, potentialGain: null, });
-			}
-			else {
-				await this.setState({ potentialGain: potentialGain, potentialLoss: null });
-			}
-
-			await Promise.all([this.countFrequency].map(z => z()));
+			this.potentailGainLoss();
 		}
 		await this.setState({ isLoading: false });
 	}
@@ -464,7 +473,7 @@ export default class App extends React.Component {
 			console.log(countsSKUs);
 
 			//counts Location
-			console.log(this.state.resultOrders[0],"LOCATION!");
+			console.log(this.state.resultOrders[0], "LOCATION!");
 
 			let countsCity = {};
 			this.state.resultOrders.forEach(i => {
@@ -484,12 +493,12 @@ export default class App extends React.Component {
 				if (countsCity[z].postalCode) {//catch undefine
 					orderedCountsCity.push(countsCity[z]);
 				}
-				
+
 			}
 
 			orderedCountsCity.sort((a, b) => b.count - a.count);
 			countsSKUs = orderedCountsCity;
-			console.log(orderedCountsCity,"CITY");
+			console.log(orderedCountsCity, "CITY");
 
 			// let pieThisCity = {
 			// 	labels: [],
@@ -503,11 +512,11 @@ export default class App extends React.Component {
 			// 	pieThisCity.titles.push(countsSKUs[z].product.sku);
 			// 	pieThisCity.colors.push(this.getRandomColor());
 			// }
-			
 
 
 
-			this.setState({ chartTopSellArray: pieThis, chartAllSKUsArray: pieThisSKUs, orderedCountsCity : orderedCountsCity }, () => resolve());
+
+			this.setState({ chartTopSellArray: pieThis, chartAllSKUsArray: pieThisSKUs, orderedCountsCity: orderedCountsCity }, () => resolve());
 
 		})//end resolve
 	}
@@ -611,8 +620,8 @@ export default class App extends React.Component {
 		//   onKeyDown={this.toggleDrawer(side, false)}
 		>
 			<div className="">
-				<div className="d-flex align-items-center m-0">
-					<div className="col-3 d-flex justify-content-around flex-column">
+				<div className="d-flex align-items-center flex-md-row flex-column m-0">
+					<div className="col-md-3 col-12 d-flex justify-content-around flex-column">
 						<MuiPickersUtilsProvider utils={DateFnsUtils}>
 							<KeyboardDatePicker
 								name="startDate"
@@ -641,9 +650,10 @@ export default class App extends React.Component {
 							/>
 						</MuiPickersUtilsProvider>
 					</div>
-					<div className="col-2 align-self-start text-left mt-3">
+					<div className="col-md-2 col-12 align-self-start text-left mt-3">
 						<FormLabel component="legend">Status</FormLabel>
 						<RadioGroup
+							className="d-flex flex-md-column flex-row"
 							aria-label="statusSelected"
 							name="statusSelected"
 							value={this.state.statusOrder}
@@ -671,7 +681,7 @@ export default class App extends React.Component {
 							/>
 						</RadioGroup>
 					</div>
-					<div className="col-1">
+					<div className="col-md-1 col-12 ">
 						<Button
 
 							variant="contained"
@@ -684,7 +694,7 @@ export default class App extends React.Component {
 							Submit
 								</Button>
 					</div>
-					<div className="col-4">
+					<div className="col-md-4 col-12 mt-md-0 mt-3">
 						<Divider orientation="vertical" style={{ alignSelf: "stretch", height: "auto" }} />
 						<Button variant="contained" color="secondary" component={RouterLink} to="/success">
 							แก้ไข Cost | Edit Cost
@@ -708,6 +718,19 @@ export default class App extends React.Component {
 
 	//INPUT
 
+	updateBlock = () => {
+		return (<div>
+			<h2 className="text-left">Update : </h2>
+			<br></br>
+			<h6 className="text-danger">แสดงจากการจ่ายเงินของ Lazada โดยถ้า Lazada จ่ายมาแล้วถึงแสดง ทั้งนี้ Order นั้นอาจเกิดขึ้นก่อนวันที่เลือกก็ได้.</h6>
+			<Divider variant="middle" />
+			<h5>Help me by buying from this store อุดหนุนร้านคนทำ <a href="https://www.lazada.co.th/shop/sn-fasion/">SN-Fashion 💗</a></h5>
+			<h5 className="">or help contribute to this project via <a href="https://github.com/manutzsong/lazada-react-frontend">Github</a></h5>
+			<Divider variant="middle" />
+			<p>W.I.P., I will constantly update this project.</p>
+		</div>);
+	}
+
 	shouldReturnIncomeReport = () => {
 		if (this.state.potentialGain) {
 			return <div className="d-flex flex-column justify-content-between align-items-center">
@@ -723,20 +746,16 @@ export default class App extends React.Component {
 		}
 		else {
 			return <div>
-				<div className="row d-flex flex-md-row flex-column justify-content-between align-items-center py-3">
+				<div className="row py-3">
 					<div className="col-md-9 col-12 order-md-0 order-1">
-						<div className="d-md-block d-none">
-							<h2 className="text-left">Update : </h2>
-							<br></br>
-							<h6 className="text-danger">แสดงจากการจ่ายเงินของ Lazada โดยถ้า Lazada จ่ายมาแล้วถึงแสดง ทั้งนี้ Order นั้นอาจเกิดขึ้นก่อนวันที่เลือกก็ได้.</h6>
-							<h6 className="text-danger">Mobile is not ready. ใช้งานบน คอม เท่านั้น หรือจอ ใหญ่ๆ</h6>
-							<Divider variant="middle" />
-							<h5>Help me by buying from this store หรือ อุดหนุนร้านคนทำ <a href="https://www.lazada.co.th/shop/sn-fasion/">SN-Fashion 💗</a></h5>
-							<h5 className="">or help contribute to this project via <a href="https://github.com/manutzsong/lazada-react-frontend">Github</a></h5>
-							<Divider variant="middle" />
-							<p>W.I.P., I will constantly update this project.</p>
+						<div className="d-flex justify-content-between flex-column align-items-stretch">
+							<div className="d-md-block d-none">
+								{this.updateBlock()}
+							</div>
+							<div className="w-100">
+								<FinancialChartMixed resultData={this.state.chartOrderNoArray} />
+							</div>
 						</div>
-						<FinancialChartMixed resultData={this.state.chartOrderNoArray} />
 					</div>
 					<div className="col-md-3 col-12 order-md-1 order-0">
 						<div className="text-left p-2 mb-3 box-shadow">
@@ -791,7 +810,7 @@ export default class App extends React.Component {
 
 
 			<div className="bg-light p-3">
-				
+
 				<div className="fixed-bottom bg-white" stype={{ zIndex: 1000001 }}>
 					<Button
 						size="large"
@@ -809,14 +828,7 @@ export default class App extends React.Component {
 				</SwipeableDrawer>
 
 				<div className="d-md-none d-block">
-					<br></br>
-					<h6 className="text-danger">แสดงจากการจ่ายเงินของ Lazada โดยถ้า Lazada จ่ายมาแล้วถึงแสดง ทั้งนี้ Order นั้นอาจเกิดขึ้นก่อนวันที่เลือกก็ได้.</h6>
-					<h6 className="text-danger">Mobile is not ready. ใช้งานบน คอม เท่านั้น หรือจอ ใหญ่ๆ</h6>
-					<Divider variant="middle" />
-					<h5>Help me by buying from this store หรือ อุดหนุนร้านคนทำ <a href="https://www.lazada.co.th/shop/sn-fasion/">SN-Fashion 💗</a></h5>
-					<h5 className="">or help contribute to this project via <a href="https://github.com/manutzsong/lazada-react-frontend">Github</a></h5>
-					<Divider variant="middle" />
-					<p>W.I.P., I will constantly update this project.</p>
+					{this.updateBlock()}
 				</div>
 
 				<BubbleMap dataCity={this.state.orderedCountsCity} />
