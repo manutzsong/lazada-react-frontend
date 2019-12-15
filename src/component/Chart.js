@@ -59,15 +59,26 @@ export default ({resultData}) => {
         borderColor: '#34495e',
         backgroundColor : 'rgba(52, 73, 94,0.2)',
       }, {
+        label: 'Adjustment Fee',
+        data: resultData.adjustmentShippingFee,
+        backgroundColor : 'rgba(233,90,154,1.0)',
+        backgroundColor : 'rgba(233,90,154,0.2)',
+      }, {
+        label: 'Other Fee',
+        data: resultData.otherFee,
+        borderColor: 'rgba(244,121,41,1.0)',
+        backgroundColor : 'rgba(244,121,41,0.2)',
+      }, {
         label: 'Voucher',
         data: resultData.promotionalVoucher,
-        borderColor: '#95a5a6',
-        backgroundColor : 'rgba(127, 140, 141,0.2)',
+        borderColor: 'rgba(253,205,74,1)',
+        backgroundColor : 'rgba(253,205,74,0.2)',
       }]
     };
   
     const options = {
-      responsive:true,
+      responsive: true, 
+      maintainAspectRatio: false,
       layout: {
         padding: {
             top: 5,
@@ -80,8 +91,11 @@ export default ({resultData}) => {
          mode: 'index',
          intersect: false,
          callbacks: {
-          title: function(tooltipItem, data) {
-            return resultData.orderNo[tooltipItem[0].index];
+            title: function(tooltipItem, data) {
+              return `Order No: ${resultData.orderNo[tooltipItem[0].index]}`;
+            },
+            afterTitle: function(tooltipItem, data) {
+              return `Order Date: ${resultData.createdAt[tooltipItem[0].index]}`;
             }
           }
       },
@@ -139,7 +153,7 @@ export default ({resultData}) => {
           </div>
           <Divider className="my-3" variant="middle"/>
           <div>
-            <Line data={data} options={options} />
+            <Line data={data} options={options} width="auto" height="400" onElementsClick={e => {console.log(e)} }/>
           </div>
        </div>
     );

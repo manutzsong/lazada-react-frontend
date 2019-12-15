@@ -10,7 +10,7 @@ export default ({primary,secondary,divider,imgSrc,url}) => {
 
     if (imgSrc && url) {
         return (
-            <ListItem divider={divider? divider : false} component={Link} href={url}>
+            <ListItem divider={divider? divider : false} component={Link} target="_blank" rel="noreferrer" href={url}>
                 <div className="px-3">
                     <img src={imgSrc} style={{width:"50px",height:"auto"}}/>
                 </div>

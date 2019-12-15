@@ -64,10 +64,10 @@ export default ({resultData,title}) => {
         <h5 className="text-left py-2">{title}</h5>
         <Divider />
         <div className="row d-flex justify-content-around align-items-center">
-          <div className="col-6">
+          <div className="col-md-6 col-12">
             <Doughnut data={data} options={options} width={250} height={310} />
           </div>
-          <div className="col-6">
+          <div className="col-md-6 col-12">
             <List  disablePadding dense component={Paper}>{renderList()}</List>
           </div>
         </div>
