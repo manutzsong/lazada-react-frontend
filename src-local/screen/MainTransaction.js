@@ -34,7 +34,7 @@ import { Link as RouterLink } from "react-router-dom";
 import NavigationIcon from "@material-ui/icons/Navigation";
 import BubbleMap from '../component/BubbleMap';
 
-const urlAPI = "https://manutzsong-laz.ddns.net/node-sv";
+const urlAPI = "https://manutzsong-laz.duckdns.org/node-sv";
 // const urlAPI = "http://localhost:3002";
 
 export default class App extends React.Component {
@@ -134,7 +134,7 @@ export default class App extends React.Component {
 
 			const itemsGet = (arrayOfOrders) => axios({
 				method: 'post',
-				url: `https://manutzsong-laz.ddns.net/python-sv/getorderitems`,
+				url: `https://manutzsong-laz.duckdns.org/python-sv/getorderitems`,
 				timeout: 60 * 10 * 1000, // Let's say you want to wait at least 4 mins
 				data: {
 					accesstoken: sessionStorage.getItem("accesstoken"),
@@ -542,16 +542,16 @@ export default class App extends React.Component {
 			});
 
 			for (let z in resultTransactions) {
-				arraySaveThis.cost.push((resultTransactions[z].cost));
+				arraySaveThis.cost.push(Math.abs(resultTransactions[z].cost));
 				arraySaveThis.profit.push(resultTransactions[z].profit);
 				arraySaveThis.revenue.push(resultTransactions[z].itemPriceCredit);
-				arraySaveThis.paymentFee.push((resultTransactions[z].paymentFee));
+				arraySaveThis.paymentFee.push(Math.abs(resultTransactions[z].paymentFee));
 				arraySaveThis.shippingFeePaidByCustomer.push(resultTransactions[z].shippingFeePaidByCustomer);
-				arraySaveThis.shippingFeeChargedByLAZ.push((resultTransactions[z].shippingFeeChargedByLAZ));
-				arraySaveThis.promotionalFlexi.push((resultTransactions[z].promotionalFlexi));
-				arraySaveThis.promotionalVoucher.push((resultTransactions[z].promotionalVoucher));
+				arraySaveThis.shippingFeeChargedByLAZ.push(Math.abs(resultTransactions[z].shippingFeeChargedByLAZ));
+				arraySaveThis.promotionalFlexi.push(Math.abs(resultTransactions[z].promotionalFlexi));
+				arraySaveThis.promotionalVoucher.push(Math.abs(resultTransactions[z].promotionalVoucher));
 
-				arraySaveThis.shippingFeeVoucher.push((resultTransactions[z].shippingFeeVoucher));
+				arraySaveThis.shippingFeeVoucher.push(Math.abs(resultTransactions[z].shippingFeeVoucher));
 				arraySaveThis.adjustmentShippingFee.push((resultTransactions[z].adjustmentShippingFee));
 				arraySaveThis.otherFee.push((resultTransactions[z].otherFee));
 

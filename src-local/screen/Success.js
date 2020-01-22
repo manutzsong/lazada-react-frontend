@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import ReactDataGrid from "react-data-grid";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
-const urlAPI = "https://manutzsong-laz.ddns.net/node-sv"
+const urlAPI = "https://manutzsong-laz.duckdns.org/node-sv"
 // const urlAPI = "http://localhost:3002"
 export default class App extends React.Component {
   constructor(props) {
@@ -32,8 +32,7 @@ export default class App extends React.Component {
       this.loopThroughProducts();
     }
     else {
-      // this.checkChromeToken();
-      this.checkCode();
+      this.checkChromeToken();
     }
   }
 
@@ -70,7 +69,7 @@ export default class App extends React.Component {
         var license = (response.data);
         console.log(license);
         let licenseStatus = checkAccess(license);
-        if (licenseStatus === "FREE_TRIAL" && licenseStatus === "FULL") {
+        if (licenseStatus === "FREE_TRIAL" || licenseStatus === "FULL") {
           this.checkCode();
         }
         else {
@@ -101,7 +100,6 @@ export default class App extends React.Component {
       if (response.data && response.data.access_token) {
         console.log(response.data);
         sessionStorage.setItem('accesstoken', response.data.access_token);
-        sessionStorage.setItem('refreshtoken', response.data.refresh_token);
         sessionStorage.setItem('userid', response.data.country_user_info[0].user_id);
         sessionStorage.setItem('responseuserdata', btoa(JSON.stringify(response.data)));
         await this.setState({ accessToken: response.data.access_token, userId: response.data.country_user_info.user_id });
@@ -183,34 +181,21 @@ export default class App extends React.Component {
 
     // console.log(skus,pro);
 
-    await this.setState({ products: productSameAsDB });
-    const { addon, chrome_path, acc } = queryString.parse(this.props.location.search);
+    await this.setState({ products: productSameAsDB});
+    const { addon, chrome_path } = queryString.parse(this.props.location.search);
     if (addon) {
-      if (chrome_path) {
-        axios({
-          method: 'post',
-          url: `${urlAPI}/insert`,
-          data: { products: this.state.products, userid: this.state.userId || sessionStorage.getItem("userid") }
-        }).then(res => {
-          console.log(res.data);
-          // this.props.history.push('/app');
-          window.location = `${chrome_path}?userid=${sessionStorage.getItem("userid")}&refreshtoken=${sessionStorage.getItem("refreshtoken")}&accesstoken=${sessionStorage.getItem("accesstoken")}&userdata=${sessionStorage.getItem("responseuserdata")}`;
-        });
-      }
-      else {
-        axios({
-          method: 'post',
-          url: `${urlAPI}/insert`,
-          data: { products: this.state.products, userid: this.state.userId || sessionStorage.getItem("userid") }
-        }).then(res => {
-          console.log(res.data);
-          // this.props.history.push('/app');
-          window.location = `chrome-extension://ojdacaeifolmomdnjodfmojipkmkboii/refresh_token.html?refreshtoken=${sessionStorage.getItem("refreshtoken")}&accesstoken=${sessionStorage.getItem("accesstoken")}`;
-        });
-      }
+      axios({
+        method: 'post',
+        url: `${urlAPI}/insert`,
+        data: { products: this.state.products, userid: this.state.userId || sessionStorage.getItem("userid") }
+      }).then(res => {
+        console.log(res.data);
+        // this.props.history.push('/app');
+        window.location = `${chrome_path}?userid=${sessionStorage.getItem("userid")}&userdata=${sessionStorage.getItem("responseuserdata")}`;
+      });
     }
     else {//original web view
-      await this.setState({ isLoading: false });
+      await this.setState({isLoading: false });
     }
   }
 
@@ -234,7 +219,7 @@ export default class App extends React.Component {
     }).then(res => {
       console.log(res.data);
       // this.props.history.push('/app');
-      window.location = "https://manutzsong-laz.ddns.net";
+      window.location.replace("https://manutzsong-laz.duckdns.org");
     });
 
   }
